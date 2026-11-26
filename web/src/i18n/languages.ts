@@ -19,6 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 export const INTERFACE_LANGUAGE_OPTIONS = [
   { code: 'zhCN', label: '简体中文' },
   { code: 'en', label: 'English' },
+  { code: 'ptBR', label: 'Português (Brasil)' },
   { code: 'fr', label: 'Français' },
   { code: 'ru', label: 'Русский' },
   { code: 'ja', label: '日本語' },
@@ -30,7 +31,8 @@ export type InterfaceLanguageCode =
   (typeof INTERFACE_LANGUAGE_OPTIONS)[number]['code']
 
 export function normalizeInterfaceLanguage(value?: string | null): string {
-  if (!value) return 'en'
+  if (!value) return 'ptBR'
+  if (['pt', 'pt-br', 'pt_br', 'ptbr'].includes(value.trim().toLowerCase())) return 'ptBR'
 
   let normalized = value.trim().replaceAll('_', '-').toLowerCase()
   if (
@@ -47,7 +49,7 @@ export function normalizeInterfaceLanguage(value?: string | null): string {
 
   return INTERFACE_LANGUAGE_OPTIONS.some((lang) => lang.code === normalized)
     ? normalized
-    : 'en'
+    : 'ptBR'
 }
 
 /**
@@ -62,6 +64,7 @@ export function normalizeInterfaceLanguage(value?: string | null): string {
  */
 export function convertDetectedLanguage(value: string): string {
   const lower = value.trim().replaceAll('_', '-').toLowerCase()
+  if (lower === 'pt' || lower === 'pt-br') return 'ptBR'
   if (!lower.startsWith('zh')) return value
   if (
     lower === 'zhtw' ||
@@ -87,6 +90,8 @@ export function convertDetectedLanguage(value: string): string {
 export function toIntlLocale(value?: string | null): string | undefined {
   if (!value) return undefined
   switch (value) {
+    case 'ptBR':
+      return 'pt-BR'
     case 'zhCN':
       return 'zh-CN'
     case 'zhTW':
